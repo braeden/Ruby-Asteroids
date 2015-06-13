@@ -18,37 +18,20 @@ Ray.game "Asteroids", :size => [800, 600] do
     @bull_vel_y = 0.0
     @lives = 3
     @score = 0
-    #hardcoded asteroids due to diffent velocties, small number and bullet check iteration
-    @ast1 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-    @ast1.pos = [rand(0..200), rand(0..600)]
-    @ast1.filled = false
-    @ast1.outlined = true
-    @ast1.outline = Ray::Color.white
-
-    @ast2 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-    @ast2.pos = [rand(0..200), rand(0..600)]
-    @ast2.filled = false
-    @ast2.outlined = true
-    @ast2.outline = Ray::Color.white
-
-    @ast3 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-    @ast3.pos = [rand(0..200), rand(0..600)]
-    @ast3.filled = false
-    @ast3.outlined = true
-    @ast3.outline = Ray::Color.white
-
-    @ast4 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-    @ast4.pos = [rand(600..800), rand(0..600)]
-    @ast4.filled = false
-    @ast4.outlined = true
-    @ast4.outline = Ray::Color.white
-
-    @ast5 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-    @ast5.pos = [rand(600..800), rand(0..600)]
-    @ast5.filled = false
-    @ast5.outlined = true
-    @ast5.outline = Ray::Color.white
-
+    @asteroids = 3.times.map do
+      a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+      a.pos = [rand(600..800), rand(0..600)]
+      a.filled = false
+      a.outlined = true
+      a.outline = Ray::Color.white
+    end
+    @asteroids += 3.times.map do
+      a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+      a.pos = [rand(0..300), rand(0..600)]
+      a.filled = false
+      a.outlined = true
+      a.outline = Ray::Color.white
+    end
 
     always do
 
@@ -128,11 +111,9 @@ Ray.game "Asteroids", :size => [800, 600] do
         @bullets.each do |b|
           win.draw b
         end
-        win.draw @ast1
-        win.draw @ast2
-        win.draw @ast3
-        win.draw @ast4
-        win.draw @ast5
+        @asteroids.each do |a|
+          win.draw a
+        end
       end
     end
   end
