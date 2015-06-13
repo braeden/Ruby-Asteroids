@@ -14,11 +14,13 @@ Ray.game "Asteroids", :size => [800, 600] do
     @vel_x = 0.0
     @vel_y = 0.0
     @bullets = []
+    @abullets = []
     @bull_vel_x = 0.0
     @bull_vel_y = 0.0
     @lives = 3
     @score = 0
-    @ast_vel= [1,1]
+    @ast_vel= [rand(-3...3),rand(-3...3)]
+    @al_vel = [rand(-3...3),rand(-3...3)]
     @aliens=[]
     @asteroids = 3.times.map do
       a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
@@ -79,6 +81,9 @@ Ray.game "Asteroids", :size => [800, 600] do
       if rand(200)==100
         @ast_vel = [rand(-5...5), rand(-5...5)]
       end
+      if rand(100)==50
+        @al_vel = [rand(-5...5), rand(-5...5)]
+      end
       if @asteroids.empty? && @aliens.empty?
         @aliens = 3.times.map do
           a = Ray::Polygon.rectangle([0, 0, 20, 20], Ray::Color.white)
@@ -86,14 +91,6 @@ Ray.game "Asteroids", :size => [800, 600] do
           a.filled = false
           a.outlined = true
           a.outline = Ray::Color.red
-          a
-        end
-        @asteroids += 3.times.map do
-          a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-          a.pos = [rand(0..300), rand(0..600)]
-          a.filled = false
-          a.outlined = true
-          a.outline = Ray::Color.white
           a
         end
       end
@@ -130,10 +127,60 @@ Ray.game "Asteroids", :size => [800, 600] do
             end
           end
         end
+        @aliens.each do |a|
+          if [b.pos.x, b.pos.y, 2, 2].to_rect.collide?([a.pos.x, a.pos.y, 20, 20])
+            @bullets.delete(b)
+            @score += 400
+            @alien.delete(a)
+          end
+        end
         #elsif condition
 
         b.pos += [@bull_vel_x, @bull_vel_y]
         b
+      end
+      @aliens.each do |al|
+        if al.pos.x > 800
+          al.pos -= [800, 0]
+        elsif al.pos.x < 0
+          al.pos += [800, 0]
+        elsif al.pos.y < 0
+          al.pos += [0, 600]
+        elsif al.pos.y > 600
+          al.pos -= [0, 600]
+        end
+        al.pos += @al_vel
+        al.angle = @ship.angle + 180
+        if rand(50) == 25
+          @abullets += 1.times.map do
+            b = Ray::Polygon.rectangle([0,0,2,2], Ray::Color.red)
+            b.pos = [al.pos.x, al.pos.y]
+            @abull_vel_x = 0.0
+            @abull_vel_y = 0.0
+            @abull_vel_x += Math::sin(al.angle / (180 / Math::PI)) * 10 * rand(0.5...1.5)
+            @abull_vel_y -= Math::cos(al.angle / (180 / Math::PI)) * 10 * rand(0.5...1.5)
+            b
+          end
+        end
+      end
+      @abullets.each do |ab|
+        if ab.pos.x > 800
+          @abullets.delete(ab)
+        elsif ab.pos.x < 0
+          @abullets.delete(ab)
+        elsif ab.pos.y < 0
+          @abullets.delete(ab)
+        elsif ab.pos.y > 600
+          @abullets.delete(ab)
+        end
+          if [@ship.pos.x, @ship.pos.y, 16, 20].to_rect.collide?([ab.pos.x, ab.pos.y, 2, 2])
+            @abullets.delete(ab)
+            @lives -= 1
+          end
+        #elsif condition
+
+        ab.pos += [@abull_vel_x, @abull_vel_y]
+        ab
       end
     end
     render do |win|
@@ -154,8 +201,21 @@ Ray.game "Asteroids", :size => [800, 600] do
         @aliens.each do |al|
           win.draw al
         end
+        @abullets.each do |ab|
+          win.draw ab
+        end
       end
     end
   end
   scenes << :square
 end
+
+
+=begin
+
+add alien movment and shooting
+
+add collison detection with asteroids
+
+start game where you have to shoot down rockets
+=end
