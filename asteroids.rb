@@ -19,6 +19,8 @@ Ray.game "Asteroids", :size => [800, 600] do
     @asteroids = 5.times.map do
       a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
       a.pos = [rand(0..30), rand(0..600)]
+      a.filled   = false
+      a.outlined = true
       a
     end
     #on :key_press, key(:q){ exit! }
