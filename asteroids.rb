@@ -18,25 +18,37 @@ Ray.game "Asteroids", :size => [800, 600] do
     @bull_vel_y = 0.0
     @lives = 3
     @score = 0
-    @asteroids = 3.times.map do
-      a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-      a.pos = [rand(0..200), rand(0..600)]
-      a.filled = false
-      a.outlined = true
-      a.outline = Ray::Color.white
-      a
-    end
-    @asteroids += 3.times.map do
-      a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
-      a.pos = [rand(600..800), rand(0..600)]
-      a.filled = false
-      a.outlined = true
-      a.outline = Ray::Color.white
-      #[rand(-3...3), rand(-3...3)]
+    #hardcoded asteroids due to diffent velocties, small number and bullet check iteration
+    @ast1 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+    @ast1.pos = [rand(0..200), rand(0..600)]
+    @ast1.filled = false
+    @ast1.outlined = true
+    @ast1.outline = Ray::Color.white
 
-      a
-    end
-    #on :key_press, key(:q){ exit! }
+    @ast2 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+    @ast2.pos = [rand(0..200), rand(0..600)]
+    @ast2.filled = false
+    @ast2.outlined = true
+    @ast2.outline = Ray::Color.white
+
+    @ast3 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+    @ast3.pos = [rand(0..200), rand(0..600)]
+    @ast3.filled = false
+    @ast3.outlined = true
+    @ast3.outline = Ray::Color.white
+
+    @ast4 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+    @ast4.pos = [rand(600..800), rand(0..600)]
+    @ast4.filled = false
+    @ast4.outlined = true
+    @ast4.outline = Ray::Color.white
+
+    @ast5 = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+    @ast5.pos = [rand(600..800), rand(0..600)]
+    @ast5.filled = false
+    @ast5.outlined = true
+    @ast5.outline = Ray::Color.white
+
 
     always do
 
@@ -87,14 +99,8 @@ Ray.game "Asteroids", :size => [800, 600] do
           @bullets.delete(b)
         end
         b.pos += [@bull_vel_x, @bull_vel_y]
-        if [b.pos.x, b.pos.y, 2, 2].to_rect.collide?([@asteroids.any?])
-          puts "Works"
-        end
         b
       end
-      @lives -= 1 if @asteroids.any? { |a|
-        [a.pos.x, a.pos.y, 50, 50].to_rect.collide?([@ship.pos.x, @ship.pos.y, 16,20])
-      }
       #; @ship.pos = [400,290]; @vel_x = 0.0; @vel_y = 0.0
     end
     render do |win|
@@ -109,9 +115,11 @@ Ray.game "Asteroids", :size => [800, 600] do
         @bullets.each do |b|
           win.draw b
         end
-        @asteroids.each do |a|
-          win.draw a
-        end
+        win.draw @ast1
+        win.draw @ast2
+        win.draw @ast3
+        win.draw @ast4
+        win.draw @ast5
       end
     end
   end
