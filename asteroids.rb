@@ -18,12 +18,15 @@ Ray.game "Asteroids", :size => [800, 600] do
     @bull_vel_y = 0.0
     @lives = 3
     @score = 0
+    @ast_vel= [1,1]
+    @aliens=[]
     @asteroids = 3.times.map do
       a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
       a.pos = [rand(600..800), rand(0..600)]
       a.filled = false
       a.outlined = true
       a.outline = Ray::Color.white
+      a
     end
     @asteroids += 3.times.map do
       a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
@@ -31,6 +34,7 @@ Ray.game "Asteroids", :size => [800, 600] do
       a.filled = false
       a.outlined = true
       a.outline = Ray::Color.white
+      a
     end
 
     always do
@@ -60,7 +64,6 @@ Ray.game "Asteroids", :size => [800, 600] do
         @ship.pos -= [0, 600]
       end
       if holding? key(:space)
-        puts "Space"
         if rand(5) == 1
           @bullets += 1.times.map do
             b = Ray::Polygon.rectangle([0,0,2,2], Ray::Color.white)
@@ -73,7 +76,39 @@ Ray.game "Asteroids", :size => [800, 600] do
           end
         end
       end
-
+      if rand(200)==100
+        @ast_vel = [rand(-5...5), rand(-5...5)]
+      end
+      if @asteroids.empty? && @aliens.empty?
+        @aliens = 3.times.map do
+          a = Ray::Polygon.rectangle([0, 0, 20, 20], Ray::Color.white)
+          a.pos = [rand(0..800), rand(0..600)]
+          a.filled = false
+          a.outlined = true
+          a.outline = Ray::Color.red
+          a
+        end
+        @asteroids += 3.times.map do
+          a = Ray::Polygon.rectangle([0, 0, 50, 50], Ray::Color.white)
+          a.pos = [rand(0..300), rand(0..600)]
+          a.filled = false
+          a.outlined = true
+          a.outline = Ray::Color.white
+          a
+        end
+      end
+      @asteroids.each do |a|
+        a.pos += @ast_vel
+        if a.pos.x > 800
+          a.pos -= [800, 0]
+        elsif a.pos.x < 0
+          a.pos += [800, 0]
+        elsif a.pos.y < 0
+          a.pos += [0, 600]
+        elsif a.pos.y > 600
+          a.pos -= [0, 600]
+        end
+      end
       @bullets.each do |b|
         if b.pos.x > 800
           @bullets.delete(b)
@@ -84,12 +119,15 @@ Ray.game "Asteroids", :size => [800, 600] do
         elsif b.pos.y > 600
           @bullets.delete(b)
         end
-        if [b.pos.x, b.pos.y, 2, 2].to_rect.collide?([@ast1.pos.x, @ast1.pos.y, 50, 50])
-          @bullets.delete(b)
-          @score += 100
-          if @ast1.scale == [0.6, 0.6]
-          else
-            @ast1.scale = [0.6, 0.6]
+        @asteroids.each do |a|
+          if [b.pos.x, b.pos.y, 2, 2].to_rect.collide?([a.pos.x, a.pos.y, 50, 50])
+            @bullets.delete(b)
+            @score += 100
+            if a.scale == [0.6, 0.6]
+              @asteroids.delete(a)
+            else
+              a.scale = [0.6, 0.6]
+            end
           end
         end
         #elsif condition
@@ -97,7 +135,6 @@ Ray.game "Asteroids", :size => [800, 600] do
         b.pos += [@bull_vel_x, @bull_vel_y]
         b
       end
-      #; @ship.pos = [400,290]; @vel_x = 0.0; @vel_y = 0.0
     end
     render do |win|
     #  if @game_over
@@ -113,6 +150,9 @@ Ray.game "Asteroids", :size => [800, 600] do
         end
         @asteroids.each do |a|
           win.draw a
+        end
+        @aliens.each do |al|
+          win.draw al
         end
       end
     end
