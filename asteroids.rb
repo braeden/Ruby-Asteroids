@@ -87,6 +87,9 @@ Ray.game "Asteroids", :size => [800, 600] do
           @bullets.delete(b)
         end
         b.pos += [@bull_vel_x, @bull_vel_y]
+        if [b.pos.x, b.pos.y, 2, 2].to_rect.collide?([@asteroids.any?])
+          puts "Works"
+        end
         b
       end
       @lives -= 1 if @asteroids.any? { |a|
