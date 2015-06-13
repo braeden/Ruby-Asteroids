@@ -142,7 +142,7 @@ Ray.game "Asteroids", :size => [800, 600] do
         b
       end
       @asteroids.each do |a|
-        if [@ship.pos.x, @ship.pos.y, 16, 20].to_rect.collide?([a.pos.x, a.pos.y, 50*a.scale, 50*a.scale])
+        if [@ship.pos.x, @ship.pos.y, 16, 20].to_rect.collide?([a.pos.x, a.pos.y, 50, 50])
           @lives -= 1
           @asteroids.delete(a)
         end
@@ -196,7 +196,7 @@ Ray.game "Asteroids", :size => [800, 600] do
         #win.draw text("YOU LOST", :at => [180,180], :size => 60)
       if @lives <= 0
         win.draw text("YOU LOST", :at => [180,180], :size => 60)
-        win.draw text("Score:" + @score.to_s, :at => [100,0], :size => 20)
+        win.draw text("Score:" + @score.to_s, :at => [0,0], :size => 20)
       else
         win.draw @ship
         win.draw text("Lives:" + @lives.to_s, :at => [0,0], :size => 20)
