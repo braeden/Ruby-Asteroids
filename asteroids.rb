@@ -76,15 +76,18 @@ Ray.game "Asteroids", :size => [800, 600] do
       elsif @ship.pos.y > 600
         @ship.pos -= [0, 600]
       end
-      on :key_press, key(:space) do
-        @bullets += 1.times.map do
-          b = Ray::Polygon.rectangle([0,0,2,2], Ray::Color.white)
-          b.pos = [@ship.pos.x, @ship.pos.y]
-          @bull_vel_x = 0.0
-          @bull_vel_y = 0.0
-          @bull_vel_x += Math::sin(@ship.angle / (180 / Math::PI)) * 20
-          @bull_vel_y -= Math::cos(@ship.angle / (180 / Math::PI)) * 20
-          b
+      if holding? key(:space)
+        puts "Space"
+        if rand(5) == 1
+          @bullets += 1.times.map do
+            b = Ray::Polygon.rectangle([0,0,2,2], Ray::Color.white)
+            b.pos = [@ship.pos.x, @ship.pos.y]
+            @bull_vel_x = 0.0
+            @bull_vel_y = 0.0
+            @bull_vel_x += Math::sin(@ship.angle / (180 / Math::PI)) * 20
+            @bull_vel_y -= Math::cos(@ship.angle / (180 / Math::PI)) * 20
+            b
+          end
         end
       end
 
@@ -98,6 +101,16 @@ Ray.game "Asteroids", :size => [800, 600] do
         elsif b.pos.y > 600
           @bullets.delete(b)
         end
+        if [b.pos.x, b.pos.y, 2, 2].to_rect.collide?([@ast1.pos.x, @ast1.pos.y, 50, 50])
+          @bullets.delete(b)
+          @score += 100
+          if @ast1.scale == [0.6, 0.6]
+          else
+            @ast1.scale = [0.6, 0.6]
+          end
+        end
+        #elsif condition
+
         b.pos += [@bull_vel_x, @bull_vel_y]
         b
       end
