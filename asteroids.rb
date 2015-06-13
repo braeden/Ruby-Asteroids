@@ -19,6 +19,7 @@ Ray.game "Asteroids", :size => [800, 600] do
     @bull_vel_y = 0.0
     @lives = 3
     @score = 0
+    @level = 1
     @ast_vel= [rand(-3...3),rand(-3...3)]
     @al_vel = [rand(-3...3),rand(-3...3)]
     @aliens=[]
@@ -85,7 +86,8 @@ Ray.game "Asteroids", :size => [800, 600] do
         @al_vel = [rand(-5...5), rand(-5...5)]
       end
       if @asteroids.empty? && @aliens.empty?
-        @aliens = 3.times.map do
+        @level += 1
+        @aliens = @level.times.map do
           a = Ray::Polygon.rectangle([0, 0, 20, 20], Ray::Color.white)
           a.pos = [rand(0..800), rand(0..600)]
           a.filled = false
@@ -131,13 +133,19 @@ Ray.game "Asteroids", :size => [800, 600] do
           if [b.pos.x, b.pos.y, 2, 2].to_rect.collide?([a.pos.x, a.pos.y, 20, 20])
             @bullets.delete(b)
             @score += 400
-            @alien.delete(a)
+            @aliens.delete(a)
           end
         end
         #elsif condition
 
         b.pos += [@bull_vel_x, @bull_vel_y]
         b
+      end
+      @asteroids.each do |a|
+        if [@ship.pos.x, @ship.pos.y, 16, 20].to_rect.collide?([a.pos.x, a.pos.y, 50*a.scale, 50*a.scale])
+          @lives -= 1
+          @asteroids.delete(a)
+        end
       end
       @aliens.each do |al|
         if al.pos.x > 800
@@ -151,7 +159,7 @@ Ray.game "Asteroids", :size => [800, 600] do
         end
         al.pos += @al_vel
         al.angle = @ship.angle + 180
-        if rand(50) == 25
+        if rand(30) == 15
           @abullets += 1.times.map do
             b = Ray::Polygon.rectangle([0,0,2,2], Ray::Color.red)
             b.pos = [al.pos.x, al.pos.y]
@@ -188,6 +196,7 @@ Ray.game "Asteroids", :size => [800, 600] do
         #win.draw text("YOU LOST", :at => [180,180], :size => 60)
       if @lives <= 0
         win.draw text("YOU LOST", :at => [180,180], :size => 60)
+        win.draw text("Score:" + @score.to_s, :at => [100,0], :size => 20)
       else
         win.draw @ship
         win.draw text("Lives:" + @lives.to_s, :at => [0,0], :size => 20)
