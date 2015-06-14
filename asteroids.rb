@@ -20,6 +20,13 @@ Ray.game "Asteroids", :size => [800, 600] do
     @lives = 3
     @score = 0
     @level = 1
+    @flame = Ray::Polygon.new
+  #  @flame.pos = [400,290]
+    @flame.add_point([-4, 10])
+    @flame.add_point([0, 20])
+    @flame.add_point([-4, 10])
+    @flame.filled = true
+
     @ast_vel= [rand(-3...3),rand(-3...3)]
     @al_vel = [rand(-3...3),rand(-3...3)]
     @aliens=[]
@@ -41,10 +48,15 @@ Ray.game "Asteroids", :size => [800, 600] do
     end
 
     always do
-
+      puts @flame[1].pos
+      puts @ship[1].pos
+      puts ""
       if holding? key(:up)
         @vel_x += Math::sin(@ship.angle / (180 / Math::PI)) * 0.5
         @vel_y -= Math::cos(@ship.angle / (180 / Math::PI)) * 0.5
+        if @flame[1].pos.y < @flame[0].pos.y+20
+          @flame[1].pos += [0,0.3]
+        end
       end
       if holding? key(:left)
         @ship.angle -= 4.5
@@ -53,6 +65,9 @@ Ray.game "Asteroids", :size => [800, 600] do
         @ship.angle += 4.5
       end
       @ship.pos += [@vel_x, @vel_y]
+
+      @flame.pos = @ship.pos
+      @flame.angle = @ship.angle
 
       @vel_x *= 0.97
       @vel_y *= 0.97
@@ -190,6 +205,9 @@ Ray.game "Asteroids", :size => [800, 600] do
         ab.pos += [@abull_vel_x, @abull_vel_y]
         ab
       end
+      if @flame[1].pos.y > @flame[0].pos.y
+        @flame[1].pos -= [0, 0.1]
+      end
     end
     render do |win|
     #  if @game_over
@@ -201,6 +219,7 @@ Ray.game "Asteroids", :size => [800, 600] do
         win.draw @ship
         win.draw text("Lives:" + @lives.to_s, :at => [0,0], :size => 20)
         win.draw text("Score:" + @score.to_s, :at => [100,0], :size => 20)
+        win.draw @flame
         @bullets.each do |b|
           win.draw b
         end
