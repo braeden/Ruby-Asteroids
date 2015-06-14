@@ -243,11 +243,6 @@ end
 
 Can't get flame to work???????????????????????
 
-add alien movment and shooting
-
-add collison detection with asteroids
-
-start game where you have to shoot down rockets
 
 Tommorow:
 Finish Missle game
