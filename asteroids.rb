@@ -103,7 +103,7 @@ Ray.game "Asteroids", :size => [800, 600] do
       if @asteroids.empty? && @aliens.empty?
         @level += 1
         @aliens = @level.times.map do
-          a = Ray::Polygon.rectangle([0, 0, 20, 20], Ray::Color.white)
+          a =  Ray::Polygon.circle([0, 0], 20, Ray::Color.red)
           a.pos = [rand(0..800), rand(0..600)]
           a.filled = false
           a.outlined = true
@@ -240,6 +240,8 @@ end
 
 
 =begin
+
+Can't get flame to work???????????????????????
 
 add alien movment and shooting
 
