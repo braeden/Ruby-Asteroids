@@ -250,7 +250,7 @@ add collison detection with asteroids
 start game where you have to shoot down rockets
 
 Tommorow:
-Finihs Missle game
+Finish Missle game
 outline snake game
 breakout game
 =end
