@@ -103,7 +103,7 @@ Ray.game "Asteroids", :size => [800, 600] do
       if @asteroids.empty? && @aliens.empty?
         @level += 1
         @aliens = @level.times.map do
-          a =  Ray::Polygon.circle([0, 0], 20, Ray::Color.red)
+          a =  Ray::Polygon.circle([0, 0], 10, Ray::Color.red)
           a.pos = [rand(0..800), rand(0..600)]
           a.filled = false
           a.outlined = true
@@ -248,4 +248,10 @@ add alien movment and shooting
 add collison detection with asteroids
 
 start game where you have to shoot down rockets
+
+
+Tommorow:
+Finihs Missle game
+outline snake game
+breakout game
 =end
